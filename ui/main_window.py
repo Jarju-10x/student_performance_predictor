@@ -6,6 +6,7 @@ from PyQt5.QtGui import QFont
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import pandas as pd
+import sqlite3
 from database.db_operations import get_all_students
 from utils.data_processor import preprocess_data, calculate_performance
 from utils.ml_models import train_model
@@ -32,7 +33,7 @@ class MainWindow(QMainWindow):
         header = QLabel(f"Welcome, {self.role.capitalize()} | Student Performance Prediction System")
         header.setFont(QFont('Arial', 12, QFont.Bold))
         header.setAlignment(Qt.AlignCenter)
-        header.setStyleSheet("padding: 10px; background-color: #f0f0f0;")
+        header.setStyleSheet("padding: 10px; background-color: #5c90c4;")
         main_layout.addWidget(header)
         
         # Tab widget for different features
@@ -264,20 +265,57 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Error", f"Failed to load student data: {str(e)}")
     
     def _import_csv(self):
-        """Import data from CSV file"""
-        file_path, _ = QFileDialog.getOpenFileName(
-            self, "Open CSV File", "", "CSV Files (*.csv)")
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv)")
         
         if file_path:
             try:
                 df = pd.read_csv(file_path)
-                # Process the CSV and add to database
-                # (Implementation would go here)
+                
+                # Connect to database
+                conn = sqlite3.connect('student_performance.db')
+                cursor = conn.cursor()
+                
+                # Clear existing data
+                cursor.execute("DELETE FROM students")
+                
+                # Insert new data
+                for _, row in df.iterrows():
+                    # Calculate performance category based on score
+                    score = row['Score']
+                    if score >= 45:
+                        performance = "Excellent"
+                    elif score >= 35:
+                        performance = "Good"
+                    elif score >= 25:
+                        performance = "Average"
+                    else:
+                        performance = "Poor"
+                    
+                    cursor.execute('''
+                    INSERT INTO students VALUES (
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                    )
+                    ''', (
+                        row['S/N'], row['Name'] if 'Name' in row else 'Unknown', 
+                        row['Gender'], row['Age'], row['Location'], row['famsize'], 
+                        row['Pstatus'], row['Medu'], row['Fedu'], row['traveltime'], 
+                        row['studytime'], row['failures'], row['schoolsup'], 
+                        row['famsup'], row['paid'], row['activities'], 
+                        row['nursery'], row['higher'], row['internet'], 
+                        row['famrel'], row['freetime'], row['health'], 
+                        row['absences'], row['Score'], performance
+                    ))
+                
+                conn.commit()
                 QMessageBox.information(self, "Success", "Data imported successfully")
-                self._load_student_data()
+                self.load_student_data()
+                
             except Exception as e:
-                QMessageBox.critical(self, "Error", f"Failed to import CSV: {str(e)}")
-    
+                QMessageBox.critical(self, "Error", f"Failed to import data: {str(e)}")
+            finally:
+                conn.close() 
+
+
     def _add_student(self):
         """Add a new student (placeholder implementation)"""
         QMessageBox.information(self, "Info", "Add student dialog would open here")

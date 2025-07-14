@@ -8,7 +8,7 @@ class LoginWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Student Performance Prediction - Login")
-        self.setFixedSize(300, 200)
+        self.setFixedSize(500, 300)
         
         self._setup_ui()
     
@@ -41,8 +41,8 @@ class LoginWindow(QMainWindow):
     
     def _apply_styles(self):
         self.setStyleSheet("""
-            QMainWindow { background-color: #f0f0f0; }
-            QLabel { font-size: 14px; margin-bottom: 5px; }
+            QMainWindow { background-color: #576059; }
+            QLabel { font-size: 16px; margin-bottom: 5px; }
             QLineEdit {
                 padding: 8px; font-size: 14px;
                 border: 1px solid #ccc; border-radius: 4px;

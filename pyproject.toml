@@ -1,7 +1,11 @@
 [project]
 name = "student-predictor"
 version = "0.1.0"
-description = "Add your description here"
+description = "Student performance Prediction using ML classification algorithm like Naive Bias and Descision Tree"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "matplotlib>=3.10.3",
+    "pandas>=2.3.1",
+    "scikit-learn>=1.7.0",
+]

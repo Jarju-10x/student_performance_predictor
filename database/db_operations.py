@@ -38,7 +38,8 @@ def initialize_database():
         schoolsup TEXT,
         famsup TEXT,
         paid TEXT,
-        activities TEXT,
+ 
+ activities TEXT,
         nursery TEXT,
         higher TEXT,
         internet TEXT,
@@ -86,3 +87,8 @@ def get_all_students() -> List[Student]:
     return students
 
 # Add other database operations as needed...
+
+
+if __name__ == '__main__':
+    std_count = get_all_students()
+    print(len(std_count))
