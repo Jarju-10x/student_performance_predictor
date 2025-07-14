@@ -40,6 +40,7 @@ A desktop application that predicts student academic performance using data mini
 ![Login Window](screenshots/login.png)
 *Login Interface*
 
+🦍
 ![Main Dashboard](screenshots/dashboard.png)
 *Main Application Window*
 
